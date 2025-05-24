@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalkulator Potensial Listrik</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f9fafb;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .form-label {
+      font-weight: 600;
+    }
+    .card {
+      border: none;
+      border-radius: 1rem;
+    }
+    .btn-primary {
+      font-weight: 600;
+      padding: 0.75rem;
+    }
+    .result-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-10 col-lg-8">
+
+        <!-- Fitur 3: Menghitung Ep = (k × q × Q) / r -->
+        <div class="card shadow p-4">
+          <h3 class="text-center mb-4 text-primary">⚡ Hitung Energi Potensial (Hukum Coulomb)</h3>
+          <form id="formCoulomb">
+            <div class="mb-3">
+              <label for="k3" class="form-label">k (Konstanta Coulomb)</label>
+              <input type="number" class="form-control" id="k3" step="any" value="9e9" placeholder="Default: 9e9">
+            </div>
+            <div class="mb-3">
+              <label for="q3" class="form-label">q (Muatan Uji - Coulomb)</label>
+              <input type="number" class="form-control" id="q3" step="any" placeholder="Contoh: 0.002">
+            </div>
+            <div class="mb-3">
+              <label for="Q3" class="form-label">Q (Muatan Sumber - Coulomb)</label>
+              <input type="number" class="form-control" id="Q3" step="any" placeholder="Contoh: 0.005">
+            </div>
+            <div class="mb-3">
+              <label for="r3" class="form-label">r (Jarak - meter)</label>
+              <input type="number" class="form-control" id="r3" step="any" placeholder="Contoh: 0.3">
+            </div>
+            <div class="d-grid mb-4">
+              <button type="button" class="btn btn-primary" onclick="hitungCoulomb()">Hitung Ep</button>
+            </div>
+            <div class="result-box">
+              <h5 class="text-primary">Hasil:</h5>
+              <pre id="hasilCoulomb" class="text-dark fw-medium mb-0"></pre>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<script>
+  function hitungDV() {
+    const w = parseFloat(document.getElementById('w1').value);
+    const q = parseFloat(document.getElementById('q1').value);
+    const hasil = document.getElementById('hasilDV');
+    hasil.innerHTML = '';
+    if (!isNaN(w) && !isNaN(q) && q !== 0) {
+      const dv = (w / q).toFixed(3);
+      hasil.innerHTML = `ΔV = W / q = ${w} / ${q} = ${dv} Volt`;
+    } else {
+      hasil.innerHTML = 'Masukkan nilai W dan q dengan benar (q ≠ 0).';
+    }
+  }
+
+  function hitungEP() {
+    const q = parseFloat(document.getElementById('q2').value);
+    const dv = parseFloat(document.getElementById('dv2').value);
+    const hasil = document.getElementById('hasilEP');
+    hasil.innerHTML = '';
+    if (!isNaN(q) && !isNaN(dv)) {
+      const ep = (q * dv).toFixed(3);
+      hasil.innerHTML = `Ep = q × ΔV = ${q} × ${dv} = ${ep} Joule`;
+    } else {
+      hasil.innerHTML = 'Masukkan nilai q dan ΔV dengan benar.';
+    }
+  }
+
+  function hitungCoulomb() {
+    const k = parseFloat(document.getElementById('k3').value);
+    const q = parseFloat(document.getElementById('q3').value);
+    const Q = parseFloat(document.getElementById('Q3').value);
+    const r = parseFloat(document.getElementById('r3').value);
+    const hasil = document.getElementById('hasilCoulomb');
+    hasil.innerHTML = '';
+    if (!isNaN(k) && !isNaN(q) && !isNaN(Q) && !isNaN(r) && r !== 0) {
+      const ep = ((k * q * Q) / r).toFixed(3);
+      hasil.innerHTML = `Ep = (k × q × Q) / r = (${k} × ${q} × ${Q}) / ${r} = ${ep} Joule`;
+    } else {
+      hasil.innerHTML = 'Masukkan nilai k, q, Q, dan r dengan benar (r ≠ 0).';
+    }
+  }
+</script>
+</body>
+</html>
