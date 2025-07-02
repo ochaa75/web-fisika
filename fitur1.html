@@ -59,17 +59,19 @@
 
 <script>
   function hitungDV() {
-    const w = parseFloat(document.getElementById('w1').value);
-    const q = parseFloat(document.getElementById('q1').value);
-    const hasil = document.getElementById('hasilDV');
-    hasil.innerHTML = '';
-    if (!isNaN(w) && !isNaN(q) && q !== 0) {
-      const dv = (w / q).toFixed(3);
-      hasil.innerHTML = `ΔV = W / q = ${w} / ${q} = ${dv} Volt`;
-    } else {
-      hasil.innerHTML = 'Masukkan nilai W dan q dengan benar (q ≠ 0).';
-    }
+  const w = parseFloat(document.getElementById('w1').value);
+  const q = parseFloat(document.getElementById('q1').value);
+  const hasil = document.getElementById('hasilDV');
+  hasil.innerHTML = '';
+
+  if (!isNaN(w) && !isNaN(q) && q !== 0) {
+    const dv = w / q;
+    const formattedDV = Number.isInteger(dv) ? dv : dv.toFixed(3);
+    hasil.innerHTML = `ΔV = W / q = ${w} / ${q} = ${formattedDV} Volt`;
+  } else {
+    hasil.innerHTML = 'Masukkan nilai W dan q dengan benar (q ≠ 0).';
   }
+}
 
   function hitungEP() {
     const q = parseFloat(document.getElementById('q2').value);
