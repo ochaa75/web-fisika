@@ -35,7 +35,6 @@
     <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8">
 
-
         <!-- Fitur 2: Menghitung Ep = q × ΔV -->
         <div class="card shadow p-4 mb-5">
           <h3 class="text-center mb-4 text-primary">⚡ Hitung Energi Potensial (Ep)</h3>
@@ -58,48 +57,55 @@
           </form>
         </div>
 
+      </div>
+    </div>
+  </div>
 
-<script>
-  function hitungDV() {
-    const w = parseFloat(document.getElementById('w1').value);
-    const q = parseFloat(document.getElementById('q1').value);
-    const hasil = document.getElementById('hasilDV');
-    hasil.innerHTML = '';
-    if (!isNaN(w) && !isNaN(q) && q !== 0) {
-      const dv = (w / q).toFixed(3);
-      hasil.innerHTML = `ΔV = W / q = ${w} / ${q} = ${dv} Volt`;
-    } else {
-      hasil.innerHTML = 'Masukkan nilai W dan q dengan benar (q ≠ 0).';
+  <script>
+    function formatHasil(nilai) {
+      return Number.isInteger(nilai) ? nilai : nilai.toFixed(3);
     }
-  }
 
-  function hitungEP() {
-    const q = parseFloat(document.getElementById('q2').value);
-    const dv = parseFloat(document.getElementById('dv2').value);
-    const hasil = document.getElementById('hasilEP');
-    hasil.innerHTML = '';
-    if (!isNaN(q) && !isNaN(dv)) {
-      const ep = (q * dv).toFixed(3);
-      hasil.innerHTML = `Ep = q × ΔV = ${q} × ${dv} = ${ep} Joule`;
-    } else {
-      hasil.innerHTML = 'Masukkan nilai q dan ΔV dengan benar.';
+    function hitungDV() {
+      const w = parseFloat(document.getElementById('w1')?.value);
+      const q = parseFloat(document.getElementById('q1')?.value);
+      const hasil = document.getElementById('hasilDV');
+      hasil.innerHTML = '';
+      if (!isNaN(w) && !isNaN(q) && q !== 0) {
+        const dv = w / q;
+        hasil.innerHTML = `ΔV = W / q = ${w} / ${q} = ${formatHasil(dv)} Volt`;
+      } else {
+        hasil.innerHTML = 'Masukkan nilai W dan q dengan benar (q ≠ 0).';
+      }
     }
-  }
 
-  function hitungCoulomb() {
-    const k = parseFloat(document.getElementById('k3').value);
-    const q = parseFloat(document.getElementById('q3').value);
-    const Q = parseFloat(document.getElementById('Q3').value);
-    const r = parseFloat(document.getElementById('r3').value);
-    const hasil = document.getElementById('hasilCoulomb');
-    hasil.innerHTML = '';
-    if (!isNaN(k) && !isNaN(q) && !isNaN(Q) && !isNaN(r) && r !== 0) {
-      const ep = ((k * q * Q) / r).toFixed(3);
-      hasil.innerHTML = `Ep = (k × q × Q) / r = (${k} × ${q} × ${Q}) / ${r} = ${ep} Joule`;
-    } else {
-      hasil.innerHTML = 'Masukkan nilai k, q, Q, dan r dengan benar (r ≠ 0).';
+    function hitungEP() {
+      const q = parseFloat(document.getElementById('q2').value);
+      const dv = parseFloat(document.getElementById('dv2').value);
+      const hasil = document.getElementById('hasilEP');
+      hasil.innerHTML = '';
+      if (!isNaN(q) && !isNaN(dv)) {
+        const ep = q * dv;
+        hasil.innerHTML = `Ep = q × ΔV = ${q} × ${dv} = ${formatHasil(ep)} Joule`;
+      } else {
+        hasil.innerHTML = 'Masukkan nilai q dan ΔV dengan benar.';
+      }
     }
-  }
-</script>
+
+    function hitungCoulomb() {
+      const k = parseFloat(document.getElementById('k3')?.value);
+      const q = parseFloat(document.getElementById('q3')?.value);
+      const Q = parseFloat(document.getElementById('Q3')?.value);
+      const r = parseFloat(document.getElementById('r3')?.value);
+      const hasil = document.getElementById('hasilCoulomb');
+      hasil.innerHTML = '';
+      if (!isNaN(k) && !isNaN(q) && !isNaN(Q) && !isNaN(r) && r !== 0) {
+        const ep = (k * q * Q) / r;
+        hasil.innerHTML = `Ep = (k × q × Q) / r = (${k} × ${q} × ${Q}) / ${r} = ${formatHasil(ep)} Joule`;
+      } else {
+        hasil.innerHTML = 'Masukkan nilai k, q, Q, dan r dengan benar (r ≠ 0).';
+      }
+    }
+  </script>
 </body>
 </html>
