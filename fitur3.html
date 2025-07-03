@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kalkulator Potensial Listrik</title>
+  <title>Kalkulator Energi Potensial Listrik</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   <style>
     body {
       background-color: #f9fafb;
@@ -24,9 +25,9 @@
     .result-box {
       background: #fff;
       border: 1px solid #ddd;
-      border-radius: 0.75rem;
+      border-radius: 0.5rem;
       padding: 1rem;
-      white-space: pre-wrap;
+      white-space: normal;
     }
   </style>
 </head>
@@ -34,86 +35,93 @@
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8">
-
-        <!-- Fitur 3: Menghitung Ep = (k × q × Q) / r -->
-        <div class="card shadow p-4">
-          <h3 class="text-center mb-4 text-primary">⚡ Hitung Energi Potensial (Hukum Coulomb)</h3>
-          <form id="formCoulomb">
+        <div class="card shadow p-4 mb-5">
+          <h3 class="text-center mb-4 text-primary">⚡ Energi Potensial Listrik</h3>
+          <form id="formEnergi">
             <div class="mb-3">
-              <label for="k3" class="form-label">k (Konstanta Coulomb)</label>
-              <input type="number" class="form-control" id="k3" step="any" value="9e9" placeholder="Default: 9e9">
+              <label for="q1" class="form-label">q₁ (μC)</label>
+              <input type="number" class="form-control" id="q1" placeholder="Contoh: 2">
             </div>
             <div class="mb-3">
-              <label for="q3" class="form-label">q (Muatan Uji - Coulomb)</label>
-              <input type="number" class="form-control" id="q3" step="any" placeholder="Contoh: 0.002">
+              <label for="q2" class="form-label">q₂ (μC)</label>
+              <input type="number" class="form-control" id="q2" placeholder="Contoh: -3">
             </div>
             <div class="mb-3">
-              <label for="Q3" class="form-label">Q (Muatan Sumber - Coulomb)</label>
-              <input type="number" class="form-control" id="Q3" step="any" placeholder="Contoh: 0.005">
-            </div>
-            <div class="mb-3">
-              <label for="r3" class="form-label">r (Jarak - meter)</label>
-              <input type="number" class="form-control" id="r3" step="any" placeholder="Contoh: 0.3">
+              <label for="r" class="form-label">(r) Jarak antar muatan (cm)</label>
+              <input type="number" class="form-control" id="r" placeholder="Contoh: 5">
             </div>
             <div class="d-grid mb-4">
-              <button type="button" class="btn btn-primary" onclick="hitungCoulomb()">Hitung Ep</button>
+              <button type="button" class="btn btn-primary" onclick="hitungEnergi()">Hitung Energi</button>
             </div>
             <div class="result-box">
               <h5 class="text-primary">Hasil:</h5>
-              <pre id="hasilCoulomb" class="text-dark fw-medium mb-0"></pre>
+              <div id="hasilEnergi" class="text-dark fw-medium"></div>
             </div>
           </form>
         </div>
-
       </div>
     </div>
   </div>
 
-<script>
-  function formatHasil(nilai) {
-    return Number.isInteger(nilai) ? nilai : parseFloat(nilai.toFixed(3));
-  }
+  <script>
+    function hitungEnergi() {
+      const q1μC = parseFloat(document.getElementById("q1").value);
+      const q2μC = parseFloat(document.getElementById("q2").value);
+      const rcm = parseFloat(document.getElementById("r").value);
+      const hasil = document.getElementById("hasilEnergi");
 
-  function hitungDV() {
-    const w = parseFloat(document.getElementById('w1')?.value);
-    const q = parseFloat(document.getElementById('q1')?.value);
-    const hasil = document.getElementById('hasilDV');
-    hasil.innerHTML = '';
-    if (!isNaN(w) && !isNaN(q) && q !== 0) {
-      const dv = w / q;
-      hasil.innerHTML = `ΔV = W / q = ${w} / ${q} = ${formatHasil(dv)} Volt`;
-    } else {
-      hasil.innerHTML = 'Masukkan nilai W dan q dengan benar (q ≠ 0).';
-    }
-  }
+      if (isNaN(q1μC) || isNaN(q2μC) || isNaN(rcm) || rcm === 0) {
+        hasil.innerHTML = '<span class="text-danger">Masukkan semua nilai dengan benar (r ≠ 0).</span>';
+        return;
+      }
 
-  function hitungEP() {
-    const q = parseFloat(document.getElementById('q2').value);
-    const dv = parseFloat(document.getElementById('dv2').value);
-    const hasil = document.getElementById('hasilEP');
-    hasil.innerHTML = '';
-    if (!isNaN(q) && !isNaN(dv)) {
-      const ep = q * dv;
-      hasil.innerHTML = `Ep = q × ΔV = ${q} × ${dv} = ${formatHasil(ep)} Joule`;
-    } else {
-      hasil.innerHTML = 'Masukkan nilai q dan ΔV dengan benar.';
-    }
-  }
+      const q1 = q1μC * 1e-6;
+      const q2 = q2μC * 1e-6;
+      const r = rcm / 100;
+      const k = 9e9;
 
-  function hitungCoulomb() {
-    const k = parseFloat(document.getElementById('k3').value);
-    const q = parseFloat(document.getElementById('q3').value);
-    const Q = parseFloat(document.getElementById('Q3').value);
-    const r = parseFloat(document.getElementById('r3').value);
-    const hasil = document.getElementById('hasilCoulomb');
-    hasil.innerHTML = '';
-    if (!isNaN(k) && !isNaN(q) && !isNaN(Q) && !isNaN(r) && r !== 0) {
-      const ep = (k * q * Q) / r;
-      hasil.innerHTML = `Ep = (k × q × Q) / r = (${k} × ${q} × ${Q}) / ${r} = ${formatHasil(ep)} Joule`;
-    } else {
-      hasil.innerHTML = 'Masukkan nilai k, q, Q, dan r dengan benar (r ≠ 0).';
+      const U = k * q1 * q2 / r;
+
+      const formatAngka = (num) => {
+        if (!isFinite(num) || isNaN(num) || Math.abs(num) < 1e-12) return "0";
+        const exponent = Math.floor(Math.log10(Math.abs(num)));
+        const mantissa = (num / Math.pow(10, exponent)).toFixed(2);
+        if (exponent === 0) {
+          return `${mantissa} \\times 10`;
+        }
+        return `${mantissa} \\times 10^{${exponent}}`;
+    };
+
+      hasil.innerHTML = `
+        <p><strong>Diketahui:</strong><br>
+          \\(q_1 = ${q1μC}\\ \\mu C = ${q1μC} \\times 10^{-6}\\ C\\)<br>
+          \\(q_2 = ${q2μC}\\ \\mu C = ${q2μC} \\times 10^{-6}\\ C\\)<br>
+          \\(r = ${rcm}\\ \\text{cm} = ${r.toFixed(2)}\\ m\\)<br>
+          \\(k = 9 \\times 10^9\\ \\text{Nm}^2/\\text{C}^2\\)
+        </p>
+
+        <p><strong>Ditanya:</strong><br>
+          Berapa energi potensial listrik antara kedua muatan?
+        </p>
+
+        <p><strong>Penyelesaian:</strong></p>
+        <div>
+          \\[
+            \\begin{aligned}
+              U &= k \\cdot \\frac{q_1 q_2}{r} \\\\
+                &= 9 \\times 10^9 \\cdot \\frac{(${q1μC} \\times 10^{-6})(${q2μC} \\times 10^{-6})}{${r.toFixed(2)}} \\\\
+                &= ${formatAngka(U)}\\ \\text{Joule}
+            \\end{aligned}
+          \\]
+        </div>
+
+        <p><strong>Kesimpulan:</strong><br>
+          Jadi, energi potensial listrik antara kedua muatan adalah \\(\\boxed{${formatAngka(U)}\\ \\text{Joule}}\\).
+        </p>
+      `;
+
+      MathJax.typeset();
     }
-  }
-</script>
+  </script>
 </body>
 </html>
