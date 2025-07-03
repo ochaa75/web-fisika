@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalkulator Medan & Potensial Listrik</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <style>
+    body {
+      background-color: #f9fafb;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .form-label {
+      font-weight: 600;
+    }
+    .card {
+      border: none;
+      border-radius: 1rem;
+    }
+    .btn-primary {
+      font-weight: 600;
+      padding: 0.75rem;
+    }
+    .result-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      white-space: normal;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-10 col-lg-8">
+        <div class="card shadow p-4 mb-5">
+          <h3 class="text-center mb-4 text-primary">⚡ Medan & Potensial Listrik</h3>
+          <form id="formListrik">
+            <div class="mb-3">
+              <label for="jenisHitung" class="form-label">Pilih Jenis Perhitungan</label>
+              <select class="form-select" id="jenisHitung">
+                <option value="medan">Kuat Medan Listrik (E)</option>
+                <option value="potensial">Potensial Listrik (V)</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="q" class="form-label">q (μC)</label>
+              <input type="number" class="form-control" id="q" placeholder="Contoh: 4">
+            </div>
+            <div class="mb-3">
+              <label for="r" class="form-label">r (cm)</label>
+              <input type="number" class="form-control" id="r" placeholder="Contoh: 10">
+            </div>
+            <div class="d-grid mb-4">
+              <button type="button" class="btn btn-primary" onclick="hitung()">Hitung</button>
+            </div>
+            <div class="result-box">
+              <h5 class="text-primary">Hasil:</h5>
+              <div id="hasil" class="text-dark fw-medium"></div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function hitung() {
+      const jenis = document.getElementById("jenisHitung").value;
+      const qμC = parseFloat(document.getElementById("q").value);
+      const rcm = parseFloat(document.getElementById("r").value);
+      const hasil = document.getElementById("hasil");
+
+      if (isNaN(qμC) || isNaN(rcm) || rcm === 0) {
+        hasil.innerHTML = '<span class="text-danger">Masukkan semua nilai dengan benar (r ≠ 0).</span>';
+        return;
+      }
+
+      const q = qμC * 1e-6;  // C
+      const r = rcm / 100;   // m
+      const k = 9e9;
+
+      let nilai = 0;
+      let simbol = "", satuan = "", rumus = "";
+
+      if (jenis === "medan") {
+        nilai = k * q / (r * r);
+        simbol = "E";
+        satuan = "N/C";
+        rumus = `E = k \\cdot \\frac{q}{r^2}`;
+      } else {
+        nilai = k * q / r;
+        simbol = "V";
+        satuan = "Volt";
+        rumus = `V = k \\cdot \\frac{q}{r}`;
+      }
+
+      const formatAngka = (num) => {
+        if (!isFinite(num) || isNaN(num) || Math.abs(num) < 1e-12) return "0";
+        const exponent = Math.floor(Math.log10(Math.abs(num)));
+        const mantissa = (num / Math.pow(10, exponent)).toFixed(2);
+        if (exponent === 0) return `${mantissa} \\times 10`;
+        return `${mantissa} \\times 10^{${exponent}}`;
+      };
+
+      hasil.innerHTML = `
+        <p><strong>Diketahui:</strong><br>
+          \\(q = ${qμC}\\ \\mu C = ${qμC} \\times 10^{-6}\\ C\\)<br>
+          \\(r = ${rcm}\\ \\text{cm} = ${r.toFixed(2)}\\ m\\)<br>
+          \\(k = 9 \\times 10^9\\ \\text{Nm}^2/\\text{C}^2\\)
+        </p>
+
+        <p><strong>Ditanya:</strong><br>
+          Berapa nilai ${jenis === "medan" ? "kuat medan listrik (E)" : "potensial listrik (V)"}?
+        </p>
+
+        <p><strong>Penyelesaian:</strong></p>
+        <div>
+          \\[
+            \\begin{aligned}
+              ${simbol} &= ${rumus} \\\\
+              &= 9 \\times 10^9 \\cdot \\frac{${qμC} \\times 10^{-6}}{${jenis === "medan" ? r.toFixed(2) + "^2" : r.toFixed(2)}} \\\\
+              &= ${formatAngka(nilai)}\\ \\text{${satuan}}
+            \\end{aligned}
+          \\]
+        </div>
+
+        <p><strong>Kesimpulan:</strong><br>
+          Jadi, nilai \\(\\boxed{${simbol} = ${formatAngka(nilai)}\\ \\text{${satuan}}}\\).
+        </p>
+      `;
+
+      MathJax.typeset();
+    }
+  </script>
+</body>
+</html>
