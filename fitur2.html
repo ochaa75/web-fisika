@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kalkulator Potensial Listrik</title>
+  <title>Kalkulator Energi Potensial Listrik</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   <style>
     body {
       background-color: #f9fafb;
@@ -26,7 +27,7 @@
       border: 1px solid #ddd;
       border-radius: 0.75rem;
       padding: 1rem;
-      white-space: pre-wrap;
+      white-space: normal;
     }
   </style>
 </head>
@@ -34,77 +35,77 @@
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8">
-
-        <!-- Fitur 2: Menghitung Ep = q × ΔV -->
         <div class="card shadow p-4 mb-5">
-          <h3 class="text-center mb-4 text-primary">⚡ Hitung Energi Potensial (Ep)</h3>
+          <h3 class="text-center mb-4 text-primary">⚡ Energi Potensial Listrik (Ep)</h3>
           <form id="formEP">
             <div class="mb-3">
-              <label for="q2" class="form-label">q (Muatan - Coulomb)</label>
+              <label for="q2" class="form-label">q (Coulomb)</label>
               <input type="number" class="form-control" id="q2" step="any" placeholder="Contoh: 0.002">
             </div>
             <div class="mb-3">
-              <label for="dv2" class="form-label">ΔV (Beda Potensial - Volt)</label>
+              <label for="dv2" class="form-label">ΔV (Volt)</label>
               <input type="number" class="form-control" id="dv2" step="any" placeholder="Contoh: 5">
             </div>
             <div class="d-grid mb-4">
-              <button type="button" class="btn btn-primary" onclick="hitungEP()">Hitung Ep</button>
+              <button type="button" class="btn btn-primary" onclick="hitungEP()">Hitung Energi Potensial</button>
             </div>
             <div class="result-box">
               <h5 class="text-primary">Hasil:</h5>
-              <pre id="hasilEP" class="text-dark fw-medium mb-0"></pre>
+              <div id="hasilEP" class="text-dark fw-medium"></div>
             </div>
           </form>
         </div>
-
       </div>
     </div>
   </div>
 
   <script>
-    function formatHasil(nilai) {
-      return Number.isInteger(nilai) ? nilai : nilai.toFixed(3);
-    }
-
-    function hitungDV() {
-      const w = parseFloat(document.getElementById('w1')?.value);
-      const q = parseFloat(document.getElementById('q1')?.value);
-      const hasil = document.getElementById('hasilDV');
-      hasil.innerHTML = '';
-      if (!isNaN(w) && !isNaN(q) && q !== 0) {
-        const dv = w / q;
-        hasil.innerHTML = `ΔV = W / q = ${w} / ${q} = ${formatHasil(dv)} Volt`;
-      } else {
-        hasil.innerHTML = 'Masukkan nilai W dan q dengan benar (q ≠ 0).';
-      }
+    function formatAngka(num) {
+      if (num === 0) return "0";
+      const exponent = Math.floor(Math.log10(Math.abs(num)));
+      const mantissa = (num / Math.pow(10, exponent)).toFixed(2);
+      return `${mantissa} \\times 10^{${exponent}}`;
     }
 
     function hitungEP() {
-      const q = parseFloat(document.getElementById('q2').value);
-      const dv = parseFloat(document.getElementById('dv2').value);
-      const hasil = document.getElementById('hasilEP');
-      hasil.innerHTML = '';
-      if (!isNaN(q) && !isNaN(dv)) {
-        const ep = q * dv;
-        hasil.innerHTML = `Ep = q × ΔV = ${q} × ${dv} = ${formatHasil(ep)} Joule`;
-      } else {
-        hasil.innerHTML = 'Masukkan nilai q dan ΔV dengan benar.';
-      }
-    }
+      const q = parseFloat(document.getElementById("q2").value);
+      const dv = parseFloat(document.getElementById("dv2").value);
+      const hasil = document.getElementById("hasilEP");
 
-    function hitungCoulomb() {
-      const k = parseFloat(document.getElementById('k3')?.value);
-      const q = parseFloat(document.getElementById('q3')?.value);
-      const Q = parseFloat(document.getElementById('Q3')?.value);
-      const r = parseFloat(document.getElementById('r3')?.value);
-      const hasil = document.getElementById('hasilCoulomb');
-      hasil.innerHTML = '';
-      if (!isNaN(k) && !isNaN(q) && !isNaN(Q) && !isNaN(r) && r !== 0) {
-        const ep = (k * q * Q) / r;
-        hasil.innerHTML = `Ep = (k × q × Q) / r = (${k} × ${q} × ${Q}) / ${r} = ${formatHasil(ep)} Joule`;
-      } else {
-        hasil.innerHTML = 'Masukkan nilai k, q, Q, dan r dengan benar (r ≠ 0).';
+      if (isNaN(q) || isNaN(dv)) {
+        hasil.innerHTML = '<span class="text-danger">Masukkan nilai q dan ΔV dengan benar.</span>';
+        return;
       }
+
+      const ep = q * dv;
+
+      hasil.innerHTML = `
+        <p><strong>Diketahui:</strong><br>
+          \\(q = ${q}\\ \\text{C}\\)<br>
+          \\(\\Delta V = ${dv}\\ \\text{Volt}\\)
+        </p>
+
+        <p><strong>Ditanya:</strong><br>
+          Berapa besar energi potensial listrik \\(E_p\\)?
+        </p>
+
+        <p><strong>Penyelesaian:</strong></p>
+        <div>
+          \\[
+            \\begin{aligned}
+              E_p &= q \\times \\Delta V \\\\
+                  &= ${q} \\times ${dv} \\\\
+                  &= ${formatAngka(ep)}\\ \\text{Joule}
+            \\end{aligned}
+          \\]
+        </div>
+
+        <p><strong>Kesimpulan:</strong><br>
+          Jadi, energi potensial listriknya adalah \\(\\boxed{${formatAngka(ep)}\\ \\text{Joule}}\\).
+        </p>
+      `;
+
+      MathJax.typeset();
     }
   </script>
 </body>
