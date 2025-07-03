@@ -67,6 +67,8 @@
     .container-fiturs {
       padding-left: 1rem;
       padding-right: 1rem;
+      overflow-x: hidden;
+      width: 100%;
     }
 
     .horizontal-scroll-wrapper {
@@ -76,7 +78,8 @@
       gap: 1rem;
       scroll-snap-type: x mandatory;
       padding: 1rem 0;
-      justify-content: center;
+      width: 100%;
+      -webkit-overflow-scrolling: touch;
     }
 
     .horizontal-scroll-wrapper::-webkit-scrollbar {
@@ -112,6 +115,11 @@
       justify-content: space-between;
     }
 
+    @media (max-width: 768px) {
+      .feature-card {
+        width: 260px;
+      }
+    }
     /* Team Section */
     #anggota {
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -199,7 +207,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link active" href="#">Kelompok3</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#">Kelompok 3</a></li>
         </ul>
       </div>
     </div>
@@ -228,7 +236,7 @@
         <div class="card-body">
           <h5 class="card-title fw-bold text-primary">Beda Potensial (ΔV)</h5>
           <p class="card-text">Hitung beda potensial listrik antara dua titik dengan mudah menggunakan kalkulator interaktif kami.</p>
-          <a href="fitur1.html" class="btn btn-outline-primary mt-auto"><i class="bi bi-arrow-right"></i> Selengkapnya</a>
+          <a href="fitur1.html" class="btn btn-outline-primary mt-auto"><i></i>Hitung di Sini</a>
         </div>
       </div>
 
@@ -237,16 +245,16 @@
         <div class="card-body">
           <h5 class="card-title fw-bold text-primary">Energi Potensial (Ep)</h5>
           <p class="card-text">Kalkulasi energi potensial listrik dengan berbagai parameter input yang dapat disesuaikan.</p>
-          <a href="fitur2.html" class="btn btn-outline-primary mt-auto"><i></i> Selengkapnya</a>
+          <a href="fitur2.html" class="btn btn-outline-primary mt-auto"><i></i>Hitung di Sini</a>
         </div>
       </div>
 
       <div class="feature-card card shadow-sm border-0">
-        <img src="https://raw.githubusercontent.com/ochaa75/web-fisika/refs/heads/main/pic4.png" class="card-img-top" alt="Medan & Potensial" />
+        <img src="pic4.png" class="card-img-top" alt="Medan & Potensial" />
         <div class="card-body">
           <h5 class="card-title fw-bold text-primary">Medan & Potensial Listrik</h5>
           <p class="card-text">Perhitungan medan dan potensial listrik dari sebuah muatan terhadap titik tertentu.</p>
-          <a href="fitur4.html" class="btn btn-outline-primary mt-auto"><i></i> Selengkapnya</a>
+          <a href="fitur4.html" class="btn btn-outline-primary mt-auto"><i></i>Hitung di Sini</a>
         </div>
       </div>
 
@@ -255,7 +263,7 @@
         <div class="card-body">
           <h5 class="card-title fw-bold text-primary">Energi Potensial (Hukum Coulomb)</h5>
           <p class="card-text">Implementasi hukum Coulomb untuk menghitung energi potensial antara muatan listrik.</p>
-          <a href="fitur3.html" class="btn btn-outline-primary mt-auto"><i></i> Selengkapnya</a>
+          <a href="fitur3.html" class="btn btn-outline-primary mt-auto"><i></i>Hitung di Sini</a>
         </div>
       </div>
 
