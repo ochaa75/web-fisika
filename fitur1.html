@@ -2,135 +2,233 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kalkulator Potensial Listrik Titik P</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   <style>
     body {
-      background-color: #f9fafb;
+      background-color: #f8f9fa;
       font-family: 'Segoe UI', sans-serif;
     }
-    .form-label {
-      font-weight: 600;
-    }
     .card {
-      border: none;
       border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     .btn-primary {
       font-weight: 600;
-      padding: 0.75rem;
     }
     .result-box {
       background: #fff;
       border: 1px solid #ddd;
       border-radius: 0.5rem;
       padding: 1rem;
-      white-space: normal;
+      margin-top: 1rem;
     }
-
   </style>
 </head>
 <body>
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8">
-        <div class="card shadow p-4 mb-5">
-          <h3 class="text-center mb-4 text-primary">🔌 Potensial Listrik di Titik P</h3>
+        <div class="card p-4">
+          <h3 class="text-center text-primary mb-4">🔌 Kalkulator Potensial Listrik Titik P</h3>
+
+          <div class="mb-3">
+            <label for="targetVar" class="form-label fw-semibold">Pilih Variabel yang Ingin Dihitung:</label>
+            <select id="targetVar" class="form-select" onchange="tampilkanInput()">
+              <option value="VP">Potensial Titik P (Vₚ)</option>
+              <option value="q1">q₁</option>
+              <option value="q2">q₂</option>
+              <option value="r1">r₁</option>
+              <option value="r2">r₂</option>
+            </select>
+          </div>
+
           <form id="formVP">
-            <div class="mb-3">
-              <label for="q1" class="form-label">q₁ (μC)</label>
-              <input type="number" class="form-control" id="q1" placeholder="Contoh: 2">
-            </div>
-            <div class="mb-3">
-              <label for="r1" class="form-label">r₁ (cm)</label>
-              <input type="number" class="form-control" id="r1" placeholder="Contoh: 4">
-            </div>
-            <div class="mb-3">
-              <label for="q2" class="form-label">q₂ (μC)</label>
-              <input type="number" class="form-control" id="q2" placeholder="Contoh: -3">
-            </div>
-            <div class="mb-3">
-              <label for="r2" class="form-label">r₂ (cm)</label>
-              <input type="number" class="form-control" id="r2" placeholder="Contoh: 6">
-            </div>
-            <div class="d-grid mb-4">
-              <button type="button" class="btn btn-primary" onclick="hitungPotensialP()">Hitung Potensial</button>
+            <div id="inputFields"></div>
+            <div class="d-grid mb-3">
+              <button type="button" class="btn btn-primary" onclick="hitung()">Hitung</button>
             </div>
             <div class="result-box">
               <h5 class="text-primary">Hasil:</h5>
               <div id="hasilVP" class="text-dark fw-medium"></div>
             </div>
           </form>
+
         </div>
       </div>
     </div>
   </div>
 
-  <script>
-    function hitungPotensialP() {
-      const q1μC = parseFloat(document.getElementById("q1").value);
-      const r1cm = parseFloat(document.getElementById("r1").value);
-      const q2μC = parseFloat(document.getElementById("q2").value);
-      const r2cm = parseFloat(document.getElementById("r2").value);
-      const hasil = document.getElementById("hasilVP");
+<script>
+  function buatInput(id, label, satuan, placeholder) {
+    return `
+      <div class="mb-3">
+        <label for="${id}" class="form-label">${label} (${satuan})</label>
+        <input type="number" class="form-control" id="${id}" placeholder="${placeholder}">
+      </div>
+    `;
+  }
 
-      if (
-        isNaN(q1μC) || isNaN(r1cm) || isNaN(q2μC) || isNaN(r2cm) ||
-        r1cm === 0 || r2cm === 0
-      ) {
-        hasil.innerHTML = '<span class="text-danger">Masukkan semua nilai dengan benar (r ≠ 0).</span>';
-        return;
-      }
+  function tampilkanInput() {
+    const target = document.getElementById("targetVar").value;
+    const field = document.getElementById("inputFields");
+    let html = "";
 
-      const q1 = q1μC * 1e-6;
-      const q2 = q2μC * 1e-6;
-      const r1 = r1cm / 100;
-      const r2 = r2cm / 100;
-      const k = 9e9;
+    if (target !== "q1") html += buatInput("q1", "q₁", "μC", "Contoh: 2");
+    if (target !== "r1") html += buatInput("r1", "r₁", "cm", "Contoh: 4");
+    if (target !== "q2") html += buatInput("q2", "q₂", "μC", "Contoh: -3");
+    if (target !== "r2") html += buatInput("r2", "r₂", "cm", "Contoh: 6");
+    if (target !== "VP")  html += buatInput("VP",  "Vₚ", "Volt", "Contoh: 12000");
 
+    field.innerHTML = html;
+    document.getElementById("hasilVP").innerHTML = "";
+  }
+
+  function formatAngka(num) {
+    if (!isFinite(num) || isNaN(num)) return "0";
+    if (Math.abs(num) < 1e-12) return "0";
+    const exponent = Math.floor(Math.log10(Math.abs(num)));
+    const mantissa = (num / Math.pow(10, exponent)).toFixed(2);
+    return `${mantissa} \\times 10^{${exponent}}`;
+  }
+
+  function hitung() {
+    const target = document.getElementById("targetVar").value;
+    const hasil = document.getElementById("hasilVP");
+
+    const q1μC = parseFloat(document.getElementById("q1")?.value);
+    const r1cm = parseFloat(document.getElementById("r1")?.value);
+    const q2μC = parseFloat(document.getElementById("q2")?.value);
+    const r2cm = parseFloat(document.getElementById("r2")?.value);
+    const VP = parseFloat(document.getElementById("VP")?.value);
+    const k = 9e9;
+
+    const q1 = q1μC * 1e-6;
+    const q2 = q2μC * 1e-6;
+    const r1 = r1cm / 100;
+    const r2 = r2cm / 100;
+
+    let output = "";
+
+    const diketahui = `
+      <p><strong>Diketahui:</strong><br>
+        ${target !== "q1" ? `\\(q_1 = ${q1μC}\\ \\mu C = ${formatAngka(q1)}\\ C\\)<br>` : ""}
+        ${target !== "r1" ? `\\(r_1 = ${r1cm}\\ \\text{cm} = ${r1.toFixed(2)}\\ m\\)<br>` : ""}
+        ${target !== "q2" ? `\\(q_2 = ${q2μC}\\ \\mu C = ${formatAngka(q2)}\\ C\\)<br>` : ""}
+        ${target !== "r2" ? `\\(r_2 = ${r2cm}\\ \\text{cm} = ${r2.toFixed(2)}\\ m\\)<br>` : ""}
+        ${target !== "VP" ? `\\(V_P = ${VP}\\ \\text{Volt}\\)<br>` : ""}
+        \\(k = 9 \\times 10^9\\ \\text{Nm}^2/\\text{C}^2\\)
+      </p>`;
+
+    if (target === "VP") {
       const V1 = k * (q1 / r1);
       const V2 = k * (q2 / r2);
-      const VP = V1 + V2;
-
-      const formatAngka = (num) => {
-        if (!isFinite(num) || isNaN(num)) return "0"; // Untuk kasus error
-        if (Math.abs(num) < 1e-12) return "0"; // Angka sangat kecil diabaikan jadi nol
-        const exponent = Math.floor(Math.log10(Math.abs(num)));
-        const mantissa = (num / Math.pow(10, exponent)).toFixed(2);
-        return `${mantissa} \\times 10^{${exponent}}`;
-      };
-
-
-      hasil.innerHTML = `
-        <p><strong>Diketahui:</strong><br>
-          \\(q_1 = ${q1μC}\\ \\mu C = ${q1μC} \\times 10^{-6}\\ C\\)<br>
-          \\(r_1 = ${r1cm}\\ \\text{cm} = ${r1.toFixed(2)}\\ m\\)<br>
-          \\(q_2 = ${q2μC}\\ \\mu C = ${q2μC} \\times 10^{-6}\\ C\\)<br>
-          \\(r_2 = ${r2cm}\\ \\text{cm} = ${r2.toFixed(2)}\\ m\\)<br>
-          \\(k = 9 \\times 10^9\\ \\text{Nm}^2/\\text{C}^2\\)
-        
-        <p><strong>Ditanya:</strong><br>
-          Berapa besar potensial listrik di titik P?
+      const VPtotal = V1 + V2;
+      output = `
+        ${diketahui}
+        <p><strong>Ditanya:</strong> Berapa besar potensial listrik di titik P?</p>
         <p><strong>Penyelesaian:</strong></p>
-        <div>
-          \\[
-            \\begin{aligned}
-              V_P &= k \\left(\\frac{q_1}{r_1} + \\frac{q_2}{r_2}\\right) \\\\
-              &= 9 \\times 10^9 \\left(\\frac{${q1μC} \\times 10^{-6}}{${r1.toFixed(2)}} + \\frac{${q2μC} \\times 10^{-6}}{${r2.toFixed(2)}}\\right) \\\\
-              &= ${formatAngka(V1)} + ${formatAngka(V2)} \\\\
-              &= ${formatAngka(VP)}\\ \\text{Volt}
-            \\end{aligned}
-          \\]
-        </div>
+        \\[
+          \\begin{aligned}
+            V_P &= k \\left(\\frac{q_1}{r_1} + \\frac{q_2}{r_2}\\right) \\\\
+                &= 9 \\times 10^9 \\left(\\frac{${formatAngka(q1)}}{${r1.toFixed(2)}} + \\frac{${formatAngka(q2)}}{${r2.toFixed(2)}}\\right) \\\\
+                &= ${formatAngka(V1)} + ${formatAngka(V2)} \\\\
+                &= ${formatAngka(VPtotal)}\\ \\text{Volt}
+          \\end{aligned}
+        \\]
         <p><strong>Kesimpulan:</strong><br>
-          Jadi, potensial di titik P adalah \\(\\boxed{${formatAngka(VP)}\\ \\text{Volt}}\\).
+          \\(V_P = \\boxed{${formatAngka(VPtotal)}\\ \\text{Volt}}\\)
         </p>
       `;
-
-      MathJax.typeset();
     }
-  </script>
+
+    else if (target === "q1") {
+      const q1C = ((VP / k) - (q2 / r2)) * r1;
+      const q1μC_result = q1C * 1e6;
+      output = `
+        ${diketahui}
+        <p><strong>Ditanya:</strong> Berapa besar muatan \\(q_1\\)?</p>
+        <p><strong>Penyelesaian:</strong></p>
+        \\[
+          \\begin{aligned}
+            q_1 &= \\left( \\frac{V_P}{k} - \\frac{q_2}{r_2} \\right) \\times r_1 \\\\
+                &= \\left( \\frac{${VP}}{9 \\times 10^9} - \\frac{${formatAngka(q2)}}{${r2.toFixed(2)}} \\right) \\times ${r1.toFixed(2)} \\\\
+                &= ${formatAngka(q1C)}\\ C = ${formatAngka(q1μC_result)}\\ \\mu C
+          \\end{aligned}
+        \\]
+        <p><strong>Kesimpulan:</strong><br>
+          \\(q_1 = \\boxed{${formatAngka(q1μC_result)}\\ \\mu C}\\)
+        </p>
+      `;
+    }
+
+    else if (target === "q2") {
+      const q2C = ((VP / k) - (q1 / r1)) * r2;
+      const q2μC_result = q2C * 1e6;
+      output = `
+        ${diketahui}
+        <p><strong>Ditanya:</strong> Berapa besar muatan \\(q_2\\)?</p>
+        <p><strong>Penyelesaian:</strong></p>
+        \\[
+          \\begin{aligned}
+            q_2 &= \\left( \\frac{V_P}{k} - \\frac{q_1}{r_1} \\right) \\times r_2 \\\\
+                &= \\left( \\frac{${VP}}{9 \\times 10^9} - \\frac{${formatAngka(q1)}}{${r1.toFixed(2)}} \\right) \\times ${r2.toFixed(2)} \\\\
+                &= ${formatAngka(q2C)}\\ C = ${formatAngka(q2μC_result)}\\ \\mu C
+          \\end{aligned}
+        \\]
+        <p><strong>Kesimpulan:</strong><br>
+          \\(q_2 = \\boxed{${formatAngka(q2μC_result)}\\ \\mu C}\\)
+        </p>
+      `;
+    }
+
+    else if (target === "r1") {
+      const r1_result = q1 / ((VP / k) - (q2 / r2));
+      const r1_cm = r1_result * 100;
+      output = `
+        ${diketahui}
+        <p><strong>Ditanya:</strong> Berapa jarak \\(r_1\\)?</p>
+        <p><strong>Penyelesaian:</strong></p>
+        \\[
+          \\begin{aligned}
+            r_1 &= \\frac{q_1}{\\left( \\frac{V_P}{k} - \\frac{q_2}{r_2} \\right)} \\\\
+                &= \\frac{${formatAngka(q1)}}{\\left( \\frac{${VP}}{9 \\times 10^9} - \\frac{${formatAngka(q2)}}{${r2.toFixed(2)}} \\right)} \\\\
+                &= ${r1_result.toFixed(4)}\\ m = ${r1_cm.toFixed(2)}\\ \\text{cm}
+          \\end{aligned}
+        \\]
+        <p><strong>Kesimpulan:</strong><br>
+          \\(r_1 = \\boxed{${r1_cm.toFixed(2)}\\ \\text{cm}}\\)
+        </p>
+      `;
+    }
+
+    else if (target === "r2") {
+      const r2_result = q2 / ((VP / k) - (q1 / r1));
+      const r2_cm = r2_result * 100;
+      output = `
+        ${diketahui}
+        <p><strong>Ditanya:</strong> Berapa jarak \\(r_2\\)?</p>
+        <p><strong>Penyelesaian:</strong></p>
+        \\[
+          \\begin{aligned}
+            r_2 &= \\frac{q_2}{\\left( \\frac{V_P}{k} - \\frac{q_1}{r_1} \\right)} \\\\
+                &= \\frac{${formatAngka(q2)}}{\\left( \\frac{${VP}}{9 \\times 10^9} - \\frac{${formatAngka(q1)}}{${r1.toFixed(2)}} \\right)} \\\\
+                &= ${r2_result.toFixed(4)}\\ m = ${r2_cm.toFixed(2)}\\ \\text{cm}
+          \\end{aligned}
+        \\]
+        <p><strong>Kesimpulan:</strong><br>
+          \\(r_2 = \\boxed{${r2_cm.toFixed(2)}\\ \\text{cm}}\\)
+        </p>
+      `;
+    }
+
+    hasil.innerHTML = output;
+    MathJax.typeset();
+  }
+
+  tampilkanInput();
+</script>
 </body>
 </html>
